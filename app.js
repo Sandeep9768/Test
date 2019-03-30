@@ -6,6 +6,7 @@ const product = require('./api/router/product.js')
 // const LabourReport=require('./api/router/LabourReport.js')
 // const ViewReport=require('./api/router/ViewReport.js')
 var bodyParser = require('body-parser')
+const order = require('./api/router/order.js')
 const app = express()
 
 const morgan = require('morgan')
@@ -31,6 +32,7 @@ app.use((req, res, next) => {
 
 app.use('/login', Login)
 app.use('/product', product)
+app.use('/order', order)
 // app.use('/attendance',Attendance);
 // app.use('/viewreport',ViewReport);
 // app.use('/labourreport',LabourReport);
