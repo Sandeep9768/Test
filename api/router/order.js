@@ -66,72 +66,38 @@ router.post('/order', function (req, res, next) {
   //   })
 })
 
-router.post(
-  '/purchase',
-  function (req, res, next) {
-    // var date = new Date()
-    // console.log(req.body.id)
+router.post('/purchase', function (req, res, next) {
+  // var date = new Date()
+  // console.log(req.body.id)
 
-    const sql = 'select * from Orders where id=?'
-    con.query(sql, [req.body.id], function (err, result) {
-      if (err) throw err
+  const sql = 'select * from Orders where id=?'
+  con.query(sql, [req.body.id], function (err, result) {
+    if (err) throw err
 
-      if (result.length > 0) {
-        // console.log(result, 'final')
-        req.body = []
-        req.body = result
-        console.log(req.body, 'body')
-        var final = []
-        var purchase = []
-        var data = req.body
-        data.map(user => {
-          console.log(user.product_id)
-          const sql = 'select * from Product where product_id=?'
-          con.query(sql, [user.product_id], function (err, result) {
-            if (err) throw err
+    if (result.length > 0) {
+      let length = result.length
+      let count = 0
+      result.forEach(user => {
+        var product_id = user.product_id
+        // console.log('contractor', contractor_id)
+        const sql = 'select * from Product where product_id=?'
 
-            if (result.length > 0) {
-              purchase.push(req.body)
-              purchase.push(result)
-              final.push(purchase)
-              res.send(final)
-              // res.json(purchase)
-            } else {
-              console.log('error')
-              res.json(err)
-            }
-          })
+        con.query(sql, [product_id], function (err2, result2) {
+          if (err2) throw err2
+          user['Product'] = result2
+          // console.log(result2)
+          count = count + 1
+          if (count == length) {
+            //  res.json("Task",result)
+            res.json(result)
+          }
         })
-        // res.json(result)
-        next()
-      } else {
-        console.log('error')
-        // res.json(err)
-      }
-    })
-  },
-  function (req, res, next) {
-    // var date = new Date()
-    // console.log(req.body, 'body')
-    // var purchase = []
-    // var data = req.body
-    // data.map(user => {
-    //   console.log(user.product_id)
-    //   const sql = 'select * from Product where product_id=?'
-    //   con.query(sql, [user.product_id], function (err, result) {
-    //     if (err) throw err
-    //     if (result.length > 0) {
-    //       req.body = result
-    //       purchase = req.body
-    //       res.send(purchase)
-    //       // res.json(purchase)
-    //     } else {
-    //       console.log('error')
-    //       res.json(err)
-    //     }
-    //   })
-    // })
-  }
-)
+      })
+    } else {
+      console.log('error')
+      // res.json(err)
+    }
+  })
+})
 
 module.exports = router
